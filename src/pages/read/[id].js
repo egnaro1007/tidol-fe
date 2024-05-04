@@ -7,17 +7,73 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import moment from 'moment/moment';
 import ScrollToTopButton from '@/components/ScroolTopButton';
+import { useRouter } from 'next/router'
+import axios from 'axios';
 
 export default function Home() {
+    const router = useRouter();
+    const { id } = router.query;
+    const [loading, setLoading] = useState(true);
+    const [chapter, setChapter] = useState(null);
+
+    useEffect(() => {
+        if (!id) return;
+        axios.get(`http://127.0.0.1:8000/api/bookly/chapter/${id}/`)
+          .then(response => {
+            setChapter(response.data);
+            setLoading(false);
+          })
+          .catch(error => {
+            console.error('Error fetching data: ', error);
+            setLoading(false);
+          });
+    }, [id]);
+
+    let title = "Bookly";
+    let content = null;
+
+    if (loading) {
+        title = "Loading...";
+        content = (
+            <SkeletonTheme baseColor="#202020" highlightColor="#232323">
+                <div class="flex flex-col space-y-4">
+                    <Skeleton height={40} />
+                    <Skeleton height={20} count={5} />
+                </div>
+            </SkeletonTheme>
+        );
+    } else {
+        if (chapter) {
+            title = chapter.title;
+            content = (
+                <>
+                    <h1 class="text-2xl font-bold mx-auto">{chapter.title}</h1>
+                    <p class="text-justify text-2xl" dangerouslySetInnerHTML={{ __html: chapter.content }}></p>
+                </>
+            )
+        } else {
+            title = "Connection Error";
+            content = (
+                <div class="flex flex-col space-y-4">
+                    <h1 class="text-2xl font-bold">Ops! Something went wrong</h1>
+                </div>
+            )
+        }
+    }
 
     return (
         <>
-            <NextSeo title={"I Picked A Hammer To Save The World"} />
-            <div class="flex flex-col space-y-8">
-                <img class="max-w-full h-auto" src="https://www.mangaread.org/wp-content/uploads/WP-manga/data/manga_63a6789cc237d/cdb86629a6a59e1cce23c9a27d9d06f2/2.jpg" alt="Image 1" />
-                <img class="max-w-full h-auto" src="https://www.mangaread.org/wp-content/uploads/WP-manga/data/manga_63a6789cc237d/cdb86629a6a59e1cce23c9a27d9d06f2/3.jpg" alt="Image 2" />
-                <img class="max-w-full h-auto" src="https://www.mangaread.org/wp-content/uploads/WP-manga/data/manga_63a6789cc237d/cdb86629a6a59e1cce23c9a27d9d06f2/4.jpg" alt="Image 3" />
-                <img class="max-w-full h-auto" src="https://www.mangaread.org/wp-content/uploads/WP-manga/data/manga_63a6789cc237d/cdb86629a6a59e1cce23c9a27d9d06f2/5.jpg" alt="Image 4" />
+            <NextSeo title={title}/>
+            <div class="flex flex-col space-y-8 mx-20">
+                {content}
+                {/* {loading ? (
+                    <h1 class="text-2xl font-bold">Bookly</h1>
+                ) : (
+                    <>
+                        <h1 class="text-2xl font-bold">{chapter.title}</h1>
+                        <p class="text-justify" dangerouslySetInnerHTML={{ __html: chapter.content }}></p>
+                    </>
+                )} */}
             </div>
             <ScrollToTopButton />
 
