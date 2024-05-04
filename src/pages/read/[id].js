@@ -36,7 +36,7 @@ export default function Home() {
         title = "Loading...";
         content = (
             <SkeletonTheme baseColor="#202020" highlightColor="#232323">
-                <div class="flex flex-col space-y-4">
+                <div className="flex flex-col space-y-4">
                     <Skeleton height={40} />
                     <Skeleton height={20} count={5} />
                 </div>
@@ -47,15 +47,15 @@ export default function Home() {
             title = chapter.title;
             content = (
                 <>
-                    <h1 class="text-2xl font-bold mx-auto">{chapter.title}</h1>
-                    <p class="text-justify text-2xl" dangerouslySetInnerHTML={{ __html: chapter.content }}></p>
+                    <h1 className="text-2xl font-bold mx-auto">{chapter.title}</h1>
+                    <p className="text-justify text-2xl" dangerouslySetInnerHTML={{ __html: chapter.content }}></p>
                 </>
             )
         } else {
             title = "Connection Error";
             content = (
-                <div class="flex flex-col space-y-4">
-                    <h1 class="text-2xl font-bold">Ops! Something went wrong</h1>
+                <div className="flex flex-col space-y-4">
+                    <h1 className="text-2xl font-bold">Ops! Something went wrong</h1>
                 </div>
             )
         }
@@ -66,14 +66,6 @@ export default function Home() {
             <NextSeo title={title}/>
             <div class="flex flex-col space-y-8 mx-20">
                 {content}
-                {/* {loading ? (
-                    <h1 class="text-2xl font-bold">Bookly</h1>
-                ) : (
-                    <>
-                        <h1 class="text-2xl font-bold">{chapter.title}</h1>
-                        <p class="text-justify" dangerouslySetInnerHTML={{ __html: chapter.content }}></p>
-                    </>
-                )} */}
             </div>
             <ScrollToTopButton />
 
