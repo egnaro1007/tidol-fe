@@ -30,17 +30,29 @@ export default function Home() {
           });
     }, [id]);
 
+
+    let title = "Bookly";
+    let content = null;
     if (loading) {
-        return <div>Loading ...</div>
-    }
-
-    return (
-        <>
-            <NextSeo title={book.title} />
-
-            <div className="max-w-7xl pt-12 mx-auto">
+        title = "Loading...";
+        content = (
+            <SkeletonTheme baseColor="#202020" highlightColor="#232323">
+                <Skeleton className="browse-banner !w-[100rempx] bg-zinc-700/20 rounded-lg">
+                    
+                </Skeleton>
+                <div className="flex flex-col space-y-4">
+                    <Skeleton height={40} />
+                    <Skeleton height={20} count={5} />
+                </div>
+            </SkeletonTheme>
+        );
+    } else {
+        if (!book) { return; }
+        title = book.title;
+        content = (
+            <>
                 <div className="browse-banner !w-[100rempx] bg-zinc-700/20 rounded-lg">
-                    <img id="image" src="https://otakukart.com/wp-content/uploads/2023/05/I-Picked-A-Hammer-To-Save-The-World-Chapter-28-scaled.jpg" className="button-animate browse-image" />
+                    <img id="image" src={book.cover} className="button-animate browse-image" />
                     <div id="black" className="bg-gradient-to-tr from-zinc-900/20 to-zinc-900/50 browse-black"></div>
                 </div>
                 <div id="body2" className="block lg:hidden">
@@ -290,6 +302,16 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
+            </>
+        );
+    }
+
+    return (
+        <>
+            <NextSeo title={title} />
+
+            <div className="max-w-7xl pt-12 mx-auto">
+                {content}
             </div>
         </>
     )

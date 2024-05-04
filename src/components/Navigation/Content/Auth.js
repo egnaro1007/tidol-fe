@@ -1,6 +1,7 @@
 import { useState, Fragment, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { toast } from 'react-hot-toast'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
 export default function AuthComponent({ isOpen, setIsOpen }) {
     const [type, setType] = useState("login")
@@ -30,6 +31,10 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
     }
 
     const postLogin = async () => {
+        if (!username || !password) {
+            toast.error("Seeems like you forgot something?");
+            return;
+        }
         try {
             const res = await fetch("http://127.0.0.1:8000/api/auth/token", {
                 method: "POST",
@@ -49,8 +54,8 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
                 localStorage.setItem("access_token", data.access);
                 localStorage.setItem("refresh_token", data.refresh);
                 window.location.reload()
-            } else {
-                toast.error("Don't know")
+            } else if (res.status === 400) {
+                toast.error("Invalid username or password")
             }
             return data
         } catch (error) {
@@ -60,6 +65,8 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
     
     const tryLogin = async () => {
         const token = localStorage.getItem("access_token")
+        const refreshToken = localStorage.getItem("refresh_token")
+
         // Open login form when access token is not available
         if (!token) {
             setType("login");
@@ -68,23 +75,49 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
         }
 
         // Verify access token
-        const res = await fetch("http://127.0.0.1:8000/api/auth/token/verify", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                token: token
-            }),
-        }, [])
-        if (res.status === 200) {
-            console.log("Access token is valid");
-            setType("loged");
-            return;
-        } else {
-            console.log("Token expired");
-            setType("login");
-            localStorage.removeItem("access_token");
+        try {
+            const res = await fetch("http://127.0.0.1:8000/api/auth/token/verify", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    token: token
+                }),
+            }, [])
+            if (res.status === 200) {
+                console.log("Access token is valid");
+                setType("loged");
+                return;
+            } else {
+                console.log("Token expired");
+                setType("login");
+                localStorage.removeItem("access_token");
+            }
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
+
+        // Try to refresh the token
+        if (refreshToken) {
+            const refreshRes = await fetch("http://127.0.0.1:8000/api/auth/token/refresh", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    refresh: refreshToken
+                }),
+            })
+            if (refreshRes.status === 200) {
+                const data = await refreshRes.json();
+                localStorage.setItem("access_token", data.access);
+                console.log("Access token refreshed");
+                setType("loged");
+            } else {
+                console.log("Refresh token is invalid");
+                localStorage.removeItem("refresh_token");
+            }
         }
     }
 
@@ -98,9 +131,10 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
     
     
     const getUserInfo = async () => {
-        const token = localStorage.getItem("access_token")
-        if (!token) { return; }
-        
+    const token = localStorage.getItem("access_token")
+    if (!token) { return; }
+    
+    try {
         const res = await fetch("http://127.0.0.1:8000/api/auth/whoami", {
             method: "GET",
             headers: {
@@ -113,7 +147,10 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
         } else {
             console.error("Failed to get user info");
         }
+    } catch (error) {
+        console.error('An error occurred:', error);
     }
+}
     
     async function handleButton() {
         if (type == "login") {
@@ -141,11 +178,18 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
     if (loading) {
         content = (
             <div className="px-[50px]">
-                <p className="text-[#e3e3e3] text-[12px]">Loading...</p>
+                <SkeletonTheme baseColor="#202020" highlightColor="#232323">
+                    <Skeleton height={40} />
+                    <Skeleton height={20} count={2} />
+                </SkeletonTheme>
+                <div className="flex justify-center mt-4">
+                    <button className={`button-animate w-28 h-10 text-sm flex text-center justify-center items-center cursor-pointer mt-2 rounded-lg bg-zinc-700/40 border border-zinc-700/20 hover:bg-zinc-700/60`}>
+                        Loading...
+                    </button>
+                </div>
             </div>
         );
     } else {
-        console.log("Loading is set to false")
         if (type == "login") {
             content = (
                 <div className="px-[50px]">
