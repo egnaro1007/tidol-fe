@@ -12,6 +12,7 @@ import axios from 'axios';
 
 export default function Home() {
     const [data, setData] = useState(null);
+    const [results, setResult] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [numberOfPage, setNumberOfPage] = useState(1);
@@ -20,7 +21,8 @@ export default function Home() {
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/bookly/book/?page=${currentPage}`)
           .then(response => {
-            setData(response.data.results);
+            setData(response.data);
+            setResult(response.data.results);
             setLoading(false);
             setNumberOfPage(Math.ceil(response.data.count / pageSize));
           })
@@ -64,7 +66,7 @@ export default function Home() {
                     {/* Categories slider */}
                     <div className="flex flex-row space-x-1 items-center overflow-x-auto">
                         <div className={`bg-zinc-700/30 justify-between button-animate p-2 px-3 text-sm flex cursor-pointer mt-2 rounded-sm hover:bg-zinc-700/20`}>
-                            <p className="text-center">Series</p>
+                            <p className="text-center">All</p>
                         </div>
                         <div className={`bg-zinc-700/30 rounded-lg justify-between button-animate p-3 text-sm flex cursor-pointer mt-2 hover:bg-zinc-700/20`}>
                             <p className="text-center line-clamp-1 w-12 h-4">Drama</p>
@@ -77,14 +79,14 @@ export default function Home() {
                         <div className="p-4">
                             <div className="flex flex-col">
                                 <div className={`bg-zinc-700/30 justify-between button-animate p-2 px-3 text-sm flex cursor-pointer mt-2 rounded-sm hover:bg-zinc-700/20`}>
-                                    <p className="text-center">Series</p>
-                                    <p className="text-center text-sm">3</p>
+                                    <p className="text-center">All</p>
+                                    <p className="text-center text-sm">{data.count}</p>
                                 </div>
                             </div>
                             <div className="mt-3 px-1">
                                 <div className="bg-zinc-700/40 w-full h-[1px]"></div>
                             </div>
-                            <div className="flex flex-col mt-1 overflow-auto">
+                            {/* <div className="flex flex-col mt-1 overflow-auto">
                                 <div className={`bg-zinc-700/30 justify-between button-animate p-2 px-3 text-sm flex cursor-pointer mt-2 rounded-sm hover:bg-zinc-700/20`}>
                                     <p className="text-center">Comedy</p>
                                     <p className="text-center text-sm">2</p>
@@ -93,12 +95,12 @@ export default function Home() {
                                     <p className="text-center">Action</p>
                                     <p className="text-center text-sm">3</p>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="w-full">
                         <div id="body" className="grid grid-cols-2 lg:grid-cols-6 xl:grid-cols-6 2xl:grid-cols-6 gap-4 p-4">
-                            {loading ? Array.from(Array(18).keys()).map((d) => <SkeletonComponent/>) : data && data.map(item => <BookComponent key={item.id} book={item} />)}
+                            {loading ? Array.from(Array(18).keys()).map((d) => <SkeletonComponent/>) : results && results.map(item => <BookComponent key={item.id} book={item} />)}
                         </div>
                     </div>
                 </div>
