@@ -1,13 +1,43 @@
 import { NextSeo } from 'next-seo';
 import MiniCard from "@/components/Card/Mini"
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MangaCard from "@/components/Card/MangaCard";
 import Tippy from '@tippyjs/react';
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import BrowseMangaCard from '@/components/Card/BrowseCard';
+import axios from 'axios';
+
+
 
 export default function Home() {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [numberOfPage, setNumberOfPage] = useState(1);
+    const pageSize = 18;
+
+    useEffect(() => {
+        axios.get(`http://127.0.0.1:8000/api/bookly/book/?page=${currentPage}`)
+          .then(response => {
+            setData(response.data.results);
+            setLoading(false);
+            setNumberOfPage(Math.ceil(response.data.count / pageSize));
+          })
+          .catch(error => {
+            console.error('Error fetching data: ', error);
+            setLoading(false);
+          });
+        }, [currentPage]);
+
+    const pageHandler = (direction) => {
+        if (direction === "back") {
+            setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage);
+        } else if (direction === "next") {
+            setCurrentPage(currentPage < numberOfPage ? currentPage + 1 : currentPage);
+        }
+        console.log(currentPage + " " + numberOfPage);
+    };
 
     return (
         <>
@@ -18,8 +48,8 @@ export default function Home() {
                     <div id="black" className="bg-gradient-to-tr from-zinc-900/20 to-black browse-black"></div>
                     <div id="body" className="relative items-center text-center flex mx-auto justify-center">
                         <div className="flex flex-col mt-16">
-                            <h1 className="text-white text-2xl font-semibold">Find the series you're looking for!</h1>
-                            <p className="text-gray-100 text-md">The series you're looking for is just a few steps away.</p>
+                            <h1 className="text-white text-2xl font-semibold">Find the books you're looking for!</h1>
+                            <p className="text-gray-100 text-md">The books you're looking for is just a few steps away.</p>
                             <div className=" flex space-x-2 mt-3.5  text-center items-center mx-auto bg-zinc-900/90 border border-zinc-700/20 px-4 rounded-lg">
                                 <div className="absolute justify-center space-x-4 mr-4">
                                     <i className="fa-solid fa-search text-[17px] mt-1"></i>
@@ -68,22 +98,7 @@ export default function Home() {
                     </div>
                     <div className="w-full">
                         <div id="body" className="grid grid-cols-2 lg:grid-cols-6 xl:grid-cols-6 2xl:grid-cols-6 gap-4 p-4">
-                            {Array.from(Array(18).keys()).map((d) => {
-                                return (
-                                    <SkeletonTheme
-                                        key={d}
-                                        baseColor="#202020"
-                                        highlightColor="#232323"
-                                    >
-                                        <div className="flex flex-col">
-                                            <Skeleton className="w-[300px] h-[260px]" />
-                                            <Skeleton className="w-[300px] h-[17px] mt-4" />
-                                            <Skeleton width={"120px"} className="h-[12px] mt-1" />
-                                        </div>
-                                    </SkeletonTheme>
-                                );
-                            })}
-
+                            {loading ? Array.from(Array(18).keys()).map((d) => <SkeletonComponent/>) : data && data.map(item => <BookComponent key={item.id} book={item} />)}
                         </div>
                     </div>
                 </div>
@@ -105,4 +120,30 @@ export default function Home() {
             </div>
         </>
     )
+}
+
+
+function BookComponent({ book }) {
+    return (
+        <BrowseMangaCard
+            title={book.title}
+            author={book.author_name}
+            cover={book.cover}
+            description={book.description}
+        />
+    );
+}
+  
+function SkeletonComponent() {
+    return (
+        <div>
+            <SkeletonTheme baseColor="#202020" highlightColor="#232323">
+                <div className="flex flex-col">
+                <Skeleton className="w-[300px] h-[260px]" />
+                <Skeleton className="w-[300px] h-[17px] mt-4" />
+                <Skeleton width={"120px"} className="h-[12px] mt-1" />
+                </div>
+            </SkeletonTheme>
+        </div>
+    );
 }
