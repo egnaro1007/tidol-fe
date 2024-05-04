@@ -18,16 +18,17 @@ export default function Home() {
 
     useEffect(() => {
         if (!id) return;
-        axios.get(`http://127.0.0.1:8000/api/bookly/chapter/${id}/`)
-          .then(response => {
-            setChapter(response.data);
-            setLoading(false);
-          })
-          .catch(error => {
-            console.error('Error fetching data: ', error);
-            setLoading(false);
-          });
-    }, [id]);
+        const headers = {
+            "Content-Type": "application/json",
+        };
+        let access_token = localStorage.getItem("access_token");
+        if (access_token) headers["authorization"] = `Bearer ${access_token}`;
+        
+        axios.get(`http://127.0.0.1:8000/api/bookly/chapter/${id}/`, { headers })
+            .then(({ data }) => setChapter(data))
+            .catch(error => console.error('Error fetching data: ', error))
+            .finally(() => setLoading(false));
+        }, [id]);
 
     let title = "Bookly";
     let content = null;
