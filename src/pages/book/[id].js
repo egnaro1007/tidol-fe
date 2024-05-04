@@ -19,15 +19,15 @@ export default function Home() {
 
     useEffect(() => {
         if (!id) return;
-        axios.get(`http://127.0.0.1:8000/api/bookly/book/${id}/`)
-          .then(response => {
-            setBook(response.data);
-            setLoading(false);
-          })
-          .catch(error => {
-            console.error('Error fetching data: ', error);
-            setLoading(false);
-          });
+        const headers = {
+            "Content-Type": "application/json",
+        };
+        let access_token = localStorage.getItem("access_token");
+        if (access_token) headers["authorization"] = `Bearer ${access_token}`;
+        axios.get(`http://127.0.0.1:8000/api/bookly/book/${id}/`, { headers })
+            .then(({ data }) => setBook(data))
+            .catch(error => console.error('Error fetching data: ', error))
+            .finally(() => setLoading(false));
     }, [id]);
 
 
@@ -82,7 +82,7 @@ export default function Home() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {book.chapters.map((chapter, index) => (
                                 <Link href={`/read/${chapter.id}`}>
-                                    <div key={index} className={`rounded-lg border px-4 py-4 text-center items-center ${chapter.is_read ? 'bg-green-700 border-green-700' : 'bg-zinc-700/40 border-zinc-700/20'}`}>
+                                    <div key={index} className={`rounded-lg border px-4 py-4 text-center items-center ${chapter.is_read ? 'bg-zinc-700/40 border-green-700' : 'bg-zinc-700/40 border-zinc-700/20'}`}>
                                         <div className="flex justify-between">
                                             <p className="text-[15px] opacity-80">Chương {parseFloat(chapter.chapter_number)}</p>
                                             <div className="flex">
@@ -223,7 +223,7 @@ export default function Home() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {book.chapters.map((chapter, index) => (
                                         <Link href={`/read/${chapter.id}`}>
-                                            <div key={index} className={`rounded-lg border px-4 py-4 text-center items-center ${chapter.is_read ? 'bg-green-700 border-green-700' : 'bg-zinc-700/40 border-zinc-700/20'}`}>
+                                            <div key={index} className={`rounded-lg border px-4 py-4 text-center items-center ${chapter.is_read ? 'bg-zinc-700/40 border-green-700' : 'bg-zinc-700/40 border-zinc-700/20'}`}>
                                                 <div className="flex justify-between">
                                                     <p className="text-[15px] opacity-80">Chương {parseFloat(chapter.chapter_number)}</p>
                                                     <div className="flex">

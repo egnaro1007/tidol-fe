@@ -17,7 +17,13 @@ module.exports = {
         title: "Mangas",
         ico: "question-circle",
         href: "/mangas",
-      }
+      },
+      {
+        web: true,
+        title: "My Library",
+        ico: "question-circle",
+        href: "/library",
+      },
     ],
   };
   
