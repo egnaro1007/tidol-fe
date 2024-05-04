@@ -8,12 +8,35 @@ import "react-loading-skeleton/dist/skeleton.css";
 import moment from 'moment/moment';
 import BrowseMangaCard from '@/components/Card/BrowseCard';
 import Link from 'next/link';
+import { useRouter } from 'next/router'
+import axios from 'axios';
 
 export default function Home() {
+    const router = useRouter();
+    const { id } = router.query;
+    const [loading, setLoading] = useState(true);
+    const [book, setBook] = useState(null);
+
+    useEffect(() => {
+        if (!id) return;
+        axios.get(`http://127.0.0.1:8000/api/bookly/book/${id}/`)
+          .then(response => {
+            setBook(response.data);
+            setLoading(false);
+          })
+          .catch(error => {
+            console.error('Error fetching data: ', error);
+            setLoading(false);
+          });
+    }, [id]);
+
+    if (loading) {
+        return <div>Loading ...</div>
+    }
 
     return (
         <>
-            <NextSeo title={"I Picked A Hammer To Save The World"} />
+            <NextSeo title={book.title} />
 
             <div className="max-w-7xl pt-12 mx-auto">
                 <div className="browse-banner !w-[100rempx] bg-zinc-700/20 rounded-lg">
@@ -22,55 +45,43 @@ export default function Home() {
                 </div>
                 <div id="body2" className="block lg:hidden">
                     <div className="flex justify-center">
-                        <img alt="anime" src="https://www.mangaread.org/wp-content/uploads/2022/12/Read-Manhwa-6-193x278.jpg" className="flex-shrink-1 rounded-lg w-[250px] h-[380px] relative object-cover bg-cover -mt-32" />
+                        <img alt={book.title} src={book.cover} className="flex-shrink-1 rounded-lg w-[250px] h-[380px] relative object-cover bg-cover -mt-32" />
                     </div>
                     <h1 className="text-xl font-semibold text-white text-center mt-3">
-                        I Picked A Hammer To Save The World
+                        {book.title}
                     </h1>
-                    <div className="grid grid-cols-2 gap-2 py-4 px-8">
+                    {/* <div className="grid grid-cols-2 gap-2 py-4 px-8">
                         <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Romance</div>
                         <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Comedy</div>
                         <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Action</div>
                         <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Adventure</div>
-                    </div>
+                    </div> */}
 
                     <div className="mt-4">
                         <p className="mt-2 line-clamp-5 text-center w-[450px]">
-                            Tiny, who is in danger of dying after crushing the head of the 7th corps captain, Demonic Beast King, with the last blow. In a despaired situation where the destruction of mankind can’t be prevented, the only comrade who was still alive, the “Sword emperor,” uses the power of his family treasure to regress Tiny.
-                            <br />
-                            Tiny, who returned to being a slum orphan from being one of the continent’s best knights, now possesses strong potential by gaining new powers that he did not have in his previous life. Can he indeed prevent the fall of mankind in this life?
+                            {book.description}    
                         </p>
                     </div>
 
 
                     <div className="mt-4 p-8">
-                        <h1 className="text-xl text-zinc-200 font-semibold mb-4">Chapters</h1>
+                        <h1 className="text-xl text-zinc-200 font-semibold mb-4">Các chương</h1>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div className="bg-zinc-700/40 rounded-lg border border-zinc-700/20 px-4 py-4 text-center items-center">
-                                <div className="flex justify-between">
-                                    <p className="text-[15px] opacity-80">Chapter 1</p>
-                                    <div className="flex">
-                                        <p className="text-[15px]">
-                                            <Link href="/read/1">
-                                                <i className="fas fa-arrow-right text-gray-500 mr-1"></i>
-                                            </Link>
-                                        </p>
+                            {book.chapters.map((chapter, index) => (
+                                <Link href={`/read/${chapter.id}`}>
+                                    <div key={index} className={`rounded-lg border px-4 py-4 text-center items-center ${chapter.is_read ? 'bg-green-700 border-green-700' : 'bg-zinc-700/40 border-zinc-700/20'}`}>
+                                        <div className="flex justify-between">
+                                            <p className="text-[15px] opacity-80">Chương {parseFloat(chapter.chapter_number)}</p>
+                                            <div className="flex">
+                                                <p className="text-[15px]">
+                                                        <i className="fas fa-arrow-right text-gray-500 mr-1"></i>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="bg-zinc-700/40 rounded-lg border border-green-500/30 px-4 py-4 text-center items-center">
-                                <div className="flex justify-between">
-                                    <p className="text-[15px] opacity-80">Chapter 2</p>
-                                    <div className="flex">
-                                        <p className="text-[15px]">
-                                            <Link href="/read/1">
-                                                <i className="fas fa-arrow-right text-green-500/60 mr-1"></i>
-                                            </Link>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                                </Link>
+                            ))}
                         </div>
                     </div>
                     <div className="mt-8 p-8">
@@ -140,7 +151,7 @@ export default function Home() {
                 <div id="body" className="hidden lg:block">
                     <div id="user-info" className="flex -mt-2 space-x-8">
                         <div className="ml-12 -mt-24">
-                            <img alt="anime" src="https://www.mangaread.org/wp-content/uploads/2022/12/Read-Manhwa-6-193x278.jpg" className="flex-shrink-1 rounded-lg w-[250px] min-h-[280px] max-h-[340px] relative object-cover bg-cover" />
+                            <img alt={book.title} src={book.cover} className="flex-shrink-1 rounded-lg w-[250px] min-h-[280px] max-h-[340px] relative object-cover bg-cover" />
                             <div className="mt-2">
                                 <div className="flex space-x-2 w-[250px]">
                                     <Tippy content={"Yakında..."} placement="bottom" arrow={false} theme="dark">
@@ -154,45 +165,29 @@ export default function Home() {
                                         </div>
                                     </Tippy>
                                 </div>
-                                <div className="mt-4">
-                                    <h1 className="text-lg text-gray-100 font-semibold mb-2">Tags</h1>
+                                {/* <div className="mt-4">
+                                    <h1 className="text-lg text-gray-100 font-semibold mb-2">Genre</h1>
                                     <div className="grid grid-cols-2 gap-2 ">
                                         <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Action</div>
                                         <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Comedy</div>
                                         <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Adventure</div>
                                         <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Romance</div>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="mt-4">
-                                    <h1 className="text-lg text-gray-100 font-semibold mb-2">Detailed Information</h1>
+                                    <h1 className="text-lg text-gray-100 font-semibold mb-2">Thông tin chi tiết</h1>
 
                                     <div className="bg-zinc-700/20 mt-2 w-full rounded-lg border border-zinc-700/20 px-4 space-y-4 py-4 text-center items-center">
                                         <div className="flex justify-between">
-                                            <p className="text-[15px] opacity-80">Serie</p>
+                                            <p className="text-[15px] opacity-80">Tiêu đề</p>
                                             <div className="flex">
-                                                <p className="text-[15px]">
-                                                    50
-                                                    <span className="opacity-60 ml-1 mr-1">/</span>
-                                                    <span className="opacity-60">55</span>
-                                                </p>
+                                                <p className="text-[15px]">{book.title}</p>
                                             </div>
                                         </div>
                                         <div className="flex justify-between">
-                                            <p className="text-[15px] opacity-80">Release Date</p>
+                                            <p className="text-[15px] opacity-80">Tác giả</p>
                                             <div className="flex">
-                                                <p className="text-[15px]">11.06.2023</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <p className="text-[15px] opacity-80">Number of Reads</p>
-                                            <div className="flex">
-                                                <p className="text-[15px]">10</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <p className="text-[15px] opacity-80">Time</p>
-                                            <div className="flex">
-                                                <p className="text-[15px]">24 min. </p>
+                                                <p className="text-[15px]">{book.author_name}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -201,45 +196,33 @@ export default function Home() {
                         </div>
                         <div className="max-w-4xl">
                             <h1 className="text-4xl font-semibold text-white">
-                                I Picked A Hammer To Save The World
+                                {book.title}
                             </h1>
                             <div className="mt-4">
-                                <h1 className="text-xl text-zinc-200 font-semibold">Synopsis</h1>
+                                <h1 className="text-xl text-zinc-200 font-semibold">Mô tả</h1>
                                 <p className="mt-2 line-clamp-3">
-                                    Tiny, who is in danger of dying after crushing the head of the 7th corps captain, Demonic Beast King, with the last blow. In a despaired situation where the destruction of mankind can’t be prevented, the only comrade who was still alive, the “Sword emperor,” uses the power of his family treasure to regress Tiny.
-                                    <br />
-                                    Tiny, who returned to being a slum orphan from being one of the continent’s best knights, now possesses strong potential by gaining new powers that he did not have in his previous life. Can he indeed prevent the fall of mankind in this life?
+                                    {book.description}
                                 </p>
                             </div>
 
                             <div className="mt-4">
-                                <h1 className="text-xl text-zinc-200 font-semibold mb-4">Chapters</h1>
+                                <h1 className="text-xl text-zinc-200 font-semibold mb-4">Các chương</h1>
                                 {/** Chapter card */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    <div className="bg-zinc-700/40 rounded-lg border border-zinc-700/20 px-4 py-4 text-center items-center">
-                                        <div className="flex justify-between">
-                                            <p className="text-[15px] opacity-80">Chapter 1</p>
-                                            <div className="flex">
-                                                <p className="text-[15px]">
-                                                    <Link href="/read/1">
-                                                        <i className="fas fa-arrow-right text-gray-500 mr-1"></i>
-                                                    </Link>
-                                                </p>
+                                    {book.chapters.map((chapter, index) => (
+                                        <Link href={`/read/${chapter.id}`}>
+                                            <div key={index} className={`rounded-lg border px-4 py-4 text-center items-center ${chapter.is_read ? 'bg-green-700 border-green-700' : 'bg-zinc-700/40 border-zinc-700/20'}`}>
+                                                <div className="flex justify-between">
+                                                    <p className="text-[15px] opacity-80">Chương {parseFloat(chapter.chapter_number)}</p>
+                                                    <div className="flex">
+                                                        <p className="text-[15px]">
+                                                                <i className="fas fa-arrow-right text-gray-500 mr-1"></i>
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="bg-zinc-700/40 rounded-lg border border-green-500/30 px-4 py-4 text-center items-center">
-                                        <div className="flex justify-between">
-                                            <p className="text-[15px] opacity-80">Chapter 2</p>
-                                            <div className="flex">
-                                                <p className="text-[15px]">
-                                                    <Link href="/read/1">
-                                                        <i className="fas fa-arrow-right text-green-500/60 mr-1"></i>
-                                                    </Link>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        </Link>
+                                    ))}
                                 </div>
                             </div>
 

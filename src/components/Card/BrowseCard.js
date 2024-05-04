@@ -19,7 +19,7 @@ export default function BrowseMangaCard(props) {
       </div>
     }>
 
-      <Link href={`/manga/test`}>
+      <Link href={`/book/${props.id}`}>
         <div className="cursor-pointer flex flex-col group">
           <div className="flex w-full h-full">
             <img loading="lazy" src={props.cover || "https://www.iana.org/_img/2022/iana-logo-header.svg"} alt={props.title || "Default Title"} width={300} height={300} className="w-[300px] h-[260px] object-cover rounded-lg group-hover:opacity-50 button-animate" />

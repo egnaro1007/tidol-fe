@@ -1,9 +1,9 @@
 module.exports = {
-    title: "Read Manga Online - NullMan",
+    title: "Read Book Online - Bookly",
     description: "",
-    canonical: "https://nullman.dev",
-    defaultTitle: 'NullMan',
-    titleTemplate: '%s – NullMan',
+    // canonical: "",
+    defaultTitle: 'Bookly',
+    titleTemplate: '%s – Bookly',
     additionalLinkTags: [
         {
             rel: 'preconnect',

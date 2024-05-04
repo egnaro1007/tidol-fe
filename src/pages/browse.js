@@ -54,7 +54,7 @@ export default function Home() {
                                 <div className="absolute justify-center space-x-4 mr-4">
                                     <i className="fa-solid fa-search text-[17px] mt-1"></i>
                                 </div>
-                                <input className="bg-zinc-700/20 navbar-input px-6 border !w-[18rem] lg:!w-[32rem] border-zinc-700/10" placeholder="Discover the Series!" />
+                                <input className="bg-zinc-700/20 navbar-input px-6 border !w-[18rem] lg:!w-[32rem] border-zinc-700/10" placeholder="Discover the Books!" />
                             </div>
 
                         </div>
@@ -126,6 +126,7 @@ export default function Home() {
 function BookComponent({ book }) {
     return (
         <BrowseMangaCard
+            id={book.id}
             title={book.title}
             author={book.author_name}
             cover={book.cover}
