@@ -12,7 +12,10 @@ import axios from 'axios';
 
 export default function Home() {
     const [data, setData] = useState(null);
+
     const [results, setResult] = useState(null);
+    const [count, setCount] = useState(0);
+
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [numberOfPage, setNumberOfPage] = useState(1);
@@ -23,6 +26,7 @@ export default function Home() {
           .then(response => {
             setData(response.data);
             setResult(response.data.results);
+            setCount(response.data.count);
             setLoading(false);
             setNumberOfPage(Math.ceil(response.data.count / pageSize));
           })
@@ -80,7 +84,7 @@ export default function Home() {
                             <div className="flex flex-col">
                                 <div className={`bg-zinc-700/30 justify-between button-animate p-2 px-3 text-sm flex cursor-pointer mt-2 rounded-sm hover:bg-zinc-700/20`}>
                                     <p className="text-center">All</p>
-                                    <p className="text-center text-sm">{data.count}</p>
+                                    <p className="text-center text-sm">{count}</p>
                                 </div>
                             </div>
                             <div className="mt-3 px-1">
@@ -100,7 +104,7 @@ export default function Home() {
                     </div>
                     <div className="w-full">
                         <div id="body" className="grid grid-cols-2 lg:grid-cols-6 xl:grid-cols-6 2xl:grid-cols-6 gap-4 p-4">
-                            {loading ? Array.from(Array(18).keys()).map((d) => <SkeletonComponent/>) : results && results.map(item => <BookComponent key={item.id} book={item} />)}
+                            {loading ? Array.from(Array(18).keys()).map((d) => <SkeletonComponent key={d} />) : results && results.map(item => <BookComponent key={item.id} book={item} />)}
                         </div>
                     </div>
                 </div>
