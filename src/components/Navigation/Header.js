@@ -25,12 +25,12 @@ export default function Header({ data }) {
         {navbarItems.map((item, index) => {
           if (!item.web) return;
           return (
-            <Link href={item.href}>
-              <div class={`relative ${item.href === router.asPath ? "text-white" : "text-gray-400"}  font-medium transition-all duration-200 hover:text-white cursor-pointer`} href="/">
+            <Link key={index} href={item.href}>
+              <div className={`relative ${item.href === router.asPath ? "text-white" : "text-gray-400"}  font-medium transition-all duration-200 hover:text-white cursor-pointer`} href="/">
                 {item.title}
               </div>
             </Link>
-          )
+          );
         })}
       </div>
       <div className="col-span-2 hidden lg:flex">

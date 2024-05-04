@@ -14,9 +14,9 @@ module.exports = {
             href: 'https://fonts.gstatic.com',
             crossOrigin: "true"
         },
-        {
-            rel: 'stylesheet',
-            href: 'https://pro.fontawesome.com/releases/v6.0.0-beta1/css/all.css'
-        }
+        // {
+        //     rel: 'stylesheet',
+        //     href: 'https://pro.fontawesome.com/releases/v6.0.0-beta1/css/all.css'
+        // }
     ]
 }
