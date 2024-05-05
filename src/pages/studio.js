@@ -36,6 +36,7 @@ export default function home() {
               </div>
             </Link>
           </div>
+          {/* Where your books will be displayed*/}
           {
             dummyData.map(book => {
               return (
@@ -61,14 +62,17 @@ function BookComponent({ book }) {
             />
         </div>
         <div className="w-full flex flex-row justify-center">
+          {/* Route to edit page */}
           <Link
             href={`/studio/edit`}
           >
-            <div className="h-[40px] w-[200px] bg-zinc-700/20 mx-6 my-2 rounded justify-center flex">
+            <div className="button-animate cursor-pointer hover:bg-zinc-700/60 h-[40px] w-[200px] bg-zinc-700/20 mx-6 my-2 rounded justify-center flex">
               <p className="self-center text-lg">Edit Book</p>
             </div>
           </Link>
-          <div className="h-[40px] w-[200px] bg-zinc-700/20 mx-6 my-2 rounded justify-center flex">
+
+          {/* Remove book from database */}
+          <div className="button-animate cursor-pointer hover:bg-zinc-700/60 h-[40px] w-[200px] bg-zinc-700/20 mx-6 my-2 rounded justify-center flex">
             <p className="self-center text-lg">Delete Book</p>
           </div>
         </div>
