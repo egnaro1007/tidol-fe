@@ -193,7 +193,7 @@ function BookComponent({ history }) {
             chapter_id={history.chapter_id}
             book_title={history.book_title}
             description={history.book_description}
-            chunk1={`Tác giả: ${history.author_name}`}
+            chunk1={<Link href={`/author/${history.author_id}`}>Tác giả: {history.author_name}</Link>}
             chunk2 = {<Link href={`/read/${history.chapter_id}`}>Chương {history.chapter_number}: {history.chapter_title}</Link>}
             chunk3={`${new Date(history.timestamp).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })} - ${new Date(history.timestamp).toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' })}`}
             cover={`http://127.0.0.1:8000${history.book_cover}`}
@@ -207,7 +207,7 @@ function FollowComponent({ follow }) {
             book_title={follow.book_title}
             book_id={follow.book_id}
             description={follow.book_description}
-            chunk1={`Tác giả: ${follow.author_name}`}
+            chunk1={<Link href={`/author/${follow.author_id}`}>Tác giả: {follow.author_name}</Link>}
             chunk2={follow.latest_chapter 
                 ? <Link href={`/read/${follow.latest_chapter.chapter_id}`}>Chương {follow.latest_chapter.chapter_number}: {follow.latest_chapter.chapter_title}</Link>
                 : <p>Sách chưa cập nhật chương</p>}
