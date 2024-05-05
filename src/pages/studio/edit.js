@@ -1,4 +1,7 @@
-export default function home() {
+import { NextSeo } from "next-seo"
+import Link from "next/link"
+
+export default function Home() {
 
   const chapter = {
     id: 1,
@@ -7,6 +10,7 @@ export default function home() {
   }
   return (
     <>
+      <NextSeo title="Edit"/>
       <div className="lg:px-24 mx-auto justify-center lg:mt-8 pt-10">
         <div className="flex flex-row mb-8">
           <div className="flex flex-col w-1/4 justify-center">
@@ -54,9 +58,11 @@ export function ChapterPanel({chapter}) {
   return (
     <div className="rounded-lg p-5 flex flex-row bg-zinc-700/50">
       <p className="text-lg self-center grow">Chapter {chapter.number}: {chapter.title}</p>
-      <div className="button-animate cursor-pointer hover:bg-green-500/60 h-auto bg-zinc-700/20 mx-2 rounded justify-center flex self-center p-2">
-        <p className="self-center text-lg">Edit</p>
-      </div>
+      <Link href="/studio/edit/chapter">
+        <div className="button-animate cursor-pointer hover:bg-green-500/60 h-auto bg-zinc-700/20 mx-2 rounded justify-center flex self-center p-2">
+          <p className="self-center text-lg">Edit</p>
+        </div>
+      </Link>
       <div className="button-animate cursor-pointer hover:bg-red-500/60 h-auto bg-zinc-700/20 mx-2 rounded justify-center flex self-center p-2">
         <p className="self-center text-lg">Delete</p>
       </div>
