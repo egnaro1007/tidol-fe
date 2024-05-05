@@ -72,9 +72,9 @@ export default function Home() {
                         <div className={`bg-zinc-700/30 justify-between button-animate p-2 px-3 text-sm flex cursor-pointer mt-2 rounded-sm hover:bg-zinc-700/20`}>
                             <p className="text-center">All</p>
                         </div>
-                        <div className={`bg-zinc-700/30 rounded-lg justify-between button-animate p-3 text-sm flex cursor-pointer mt-2 hover:bg-zinc-700/20`}>
+                        {/* <div className={`bg-zinc-700/30 rounded-lg justify-between button-animate p-3 text-sm flex cursor-pointer mt-2 hover:bg-zinc-700/20`}>
                             <p className="text-center line-clamp-1 w-12 h-4">Drama</p>
-                        </div>
+                        </div> */}
                     </div>
 
                 </div>
