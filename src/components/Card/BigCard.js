@@ -12,7 +12,7 @@ export default function BigCard(props) {
                 <div className="bg-zinc-800/20 border-zinc-700/20 flex h-[250px] w-full rounded-lg">
                     <div className="overflow-hidden w-full">
                         <a href={`/book/${props.book_id}`}>
-                            <div className="h-[205px] relative overflow-auto">
+                            <div className="h-[205px] relative overflow-hidden">
                                 <div id="info" className="relative ml-3 overflow-hidden">
                                     <div id="content">
                                         <div className="card-info transition duration-300 w-full">
