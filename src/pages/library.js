@@ -194,18 +194,14 @@ function BookComponent({ history }) {
             book_title={history.book_title}
             description={history.book_description}
             chunk1={`Tác giả: ${history.author_name}`}
-            chunk2 = {<a href={`/read/${history.chapter_id}`}>Chương {history.chapter_number}: {history.chapter_title}</a>}
-            chunk3={`${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)} - ${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`}
+            chunk2 = {<Link href={`/read/${history.chapter_id}`}>Chương {history.chapter_number}: {history.chapter_title}</Link>}
+            chunk3={`${new Date(history.timestamp).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })} - ${new Date(history.timestamp).toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' })}`}
             cover={`http://127.0.0.1:8000${history.book_cover}`}
         />
     );
 }
 
 function FollowComponent({ follow }) {
-    let date = null
-    if (follow.latest_chapter != null) {
-        date = new Date(follow.latest_chapter.lastupdated)
-    } 
     return (
         <BigCard
             book_title={follow.book_title}
@@ -213,10 +209,10 @@ function FollowComponent({ follow }) {
             description={follow.book_description}
             chunk1={`Tác giả: ${follow.author_name}`}
             chunk2={follow.latest_chapter 
-                ? <a href={`/read/${follow.latest_chapter.chapter_id}`}>Chương {follow.latest_chapter.chapter_number}: {follow.latest_chapter.chapter_title}</a>
+                ? <Link href={`/read/${follow.latest_chapter.chapter_id}`}>Chương {follow.latest_chapter.chapter_number}: {follow.latest_chapter.chapter_title}</Link>
                 : <p>Sách chưa cập nhật chương</p>}
             chunk3={follow.latest_chapter 
-                ? <p>Cập nhật: {`${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)} - ${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`}</p> 
+                ? <p>{`Cập nhật: ${new Date(follow.latest_chapter.lastupdated).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })} - ${new Date(follow.latest_chapter.lastupdated).toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' })}`}</p> 
                 : <p></p>}
             cover={`http://127.0.0.1:8000${follow.book_cover}`}
         />
