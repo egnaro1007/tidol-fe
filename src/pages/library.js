@@ -14,12 +14,13 @@ import SlideCard from '@/components/Card/SlideCard';
 
 export default function Home() {
     const [loading, setLoading] = useState(false);
-    const [menu, setMenu] = useState("recent");
+    const [menu, setMenu] = useState("start");
 
     const [recentList, setRecentList] = useState([]);
     const [followList, setFollowList] = useState([]);
 
     const handleRecentListAPI = async () => {
+        if (localStorage.getItem("access_token") === null) return;
         setLoading(true);
 
         const res = await fetch("http://127.0.0.1:8000/api/bookly/history/", {
@@ -32,6 +33,12 @@ export default function Home() {
 
         if (res.status === 200) {
             setRecentList(await res.json());
+        } else {
+            setRecentList([]);
+            if (res.status === 401) {
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("refresh_token");
+            }
         }
 
         setLoading(false);
@@ -69,6 +76,16 @@ export default function Home() {
         title = "Library";
 
         switch(menu) {
+            case "start":
+                content = (
+                    <>
+                        <div className='mt-8 lg:ml-0 -ml-4'>
+                            <div id="title"><h1 class="text-2xl font-semibold">Persional Library</h1></div>
+                        </div>
+                    </>
+                );
+                break;
+
             case "recent":
                 content = (
                     <>

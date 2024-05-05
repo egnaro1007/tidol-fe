@@ -10,12 +10,14 @@ import BrowseMangaCard from '@/components/Card/BrowseCard';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function Home() {
     const router = useRouter();
     const { id } = router.query;
     const [loading, setLoading] = useState(true);
     const [book, setBook] = useState(null);
+    const [isFollowed, setIsFollowed] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -25,10 +27,85 @@ export default function Home() {
         let access_token = localStorage.getItem("access_token");
         if (access_token) headers["authorization"] = `Bearer ${access_token}`;
         axios.get(`http://127.0.0.1:8000/api/bookly/book/${id}/`, { headers })
-            .then(({ data }) => setBook(data))
-            .catch(error => console.error('Error fetching data: ', error))
+            .then(({ data }) => {
+                setBook(data);
+                setIsFollowed(data.is_followed);
+            })
+            .catch(error => {
+                console.error('Error fetching data: ', error);
+                if (error.response && error.response.status === 401) {
+                    localStorage.removeItem("access_token");
+                }
+            })
             .finally(() => setLoading(false));
     }, [id]);
+
+
+    const handleFollowButton = () => {
+        const headers = {
+            "Content-Type": "application/json",
+        };
+        let access_token = localStorage.getItem("access_token");
+        if (access_token) headers["authorization"] = `Bearer ${access_token}`;
+        else {
+            toast.error("You must login first");
+            return;
+        }
+        if (isFollowed) {
+            const unfollowPromise = sendRequest('delete', `/api/bookly/follow/`, { book_id: id }, headers)
+                .then(success => {
+                    if (success) {
+                        setIsFollowed(false);
+                    }
+                    return success;
+                });
+
+            toast.promise(
+                unfollowPromise,
+                {
+                    loading: 'Hủy theo dõi...',
+                    success: 'Đã loại bỏ khỏi danh sách theo dõi của bạn',
+                    error: 'Không thể hủy theo dõi',
+                }
+            );
+        } else {
+            const followPromise = sendRequest('post', `/api/bookly/follow/`, { book_id: id }, headers)
+                .then(success => {
+                    if (success) {
+                        setIsFollowed(true);
+                    }
+                    return success;
+                });
+
+            toast.promise(
+                followPromise,
+                {
+                    loading: 'Đang theo dõi...',
+                    success: 'Đã thêm vào danh sách theo dõi của bạn',
+                    error: 'Không thể theo dõi',
+                }
+            );
+        }
+    };
+
+    function sendRequest(method, url, data, headers) {
+        return axios({ method, url, data, headers })
+            .then(response => {
+                if (response.status === 200) {
+                    return true;
+                }
+                throw new Error('Request failed');
+            })
+            .catch(error => {
+                if (error.response){
+                    if (error.response.status === 401) {
+                        localStorage.removeItem("access_token");
+                        toast.error("Try to login again");
+                    }
+                } 
+                throw error;
+            });
+    }
 
 
     let title = "Bookly";
@@ -167,15 +244,24 @@ export default function Home() {
                             <div className="mt-2">
                                 <div className="flex space-x-2 w-[250px]">
                                     <Tippy content={"Yakında..."} placement="bottom" arrow={false} theme="dark">
-                                        <div onClick={() => favorite()} className={`w-full mt-2 py-2.5 group button-animate p-2 px-6 text-md flex text-center justify-center items-center cursor-pointer rounded-lg bg-zinc-700/30 border border-zinc-700/10 hover:bg-zinc-700/40`}>
-                                            <i className={`fas fa-plus mr-2 mt-0.5 text-xl button-animate`}></i> <p className="mr-2 button-animate mt-0.5 text-sm text-white">Listeye Ekle</p>
+                                        <div onClick={() => handleFollowButton()} className={`w-full mt-2 py-2.5 group button-animate p-2 px-6 text-md flex text-center justify-center items-center cursor-pointer rounded-lg bg-zinc-700/30 border border-zinc-700/10 hover:bg-zinc-700/40`}>
+                                            {isFollowed ?
+                                                <div> 
+                                                    <i className="fas fa-check mr-2 mt-0.5 text-xl button-animate"></i> 
+                                                    <p className="mr-2 button-animate mt-0.5 text-sm text-white">Hủy theo dõi sách</p>
+                                                </div> : 
+                                                <div>
+                                                    <i className="fas fa-plus mr-2 mt-0.5 text-xl button-animate"></i>
+                                                    <p className="mr-2 button-animate mt-0.5 text-sm text-white">Theo dõi sách</p>
+                                                </div>
+                                            }       
                                         </div>
                                     </Tippy>
-                                    <Tippy content={"Yakında..."} placement="bottom" arrow={false} theme="dark">
+                                    {/* <Tippy content={"Yakında..."} placement="bottom" arrow={false} theme="dark">
                                         <div onClick={() => like()} className={`mt-2 px-6 py-2.5 group button-animate  text-md flex text-center justify-center items-center cursor-pointer rounded-lg bg-zinc-700/30 border border-zinc-700/10 hover:bg-zinc-700/40`}>
                                             <i className={`fas fa-heart text-red-600 mt-0.5 text-lg button-animate`}></i>
                                         </div>
-                                    </Tippy>
+                                    </Tippy> */}
                                 </div>
                                 {/* <div className="mt-4">
                                     <h1 className="text-lg text-gray-100 font-semibold mb-2">Genre</h1>
