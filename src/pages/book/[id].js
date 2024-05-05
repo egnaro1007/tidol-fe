@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router'
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { comment } from 'postcss';
 
 export default function Home() {
     const router = useRouter();
@@ -19,6 +20,10 @@ export default function Home() {
     const [book, setBook] = useState(null);
     const [isFollowed, setIsFollowed] = useState(false);
 
+    const [isReviewed, setIsReviewed] = useState(false);
+    const [review, setReview] = useState("");
+    const [rating, setRating] = useState(0);
+    
     useEffect(() => {
         if (!id) return;
         const headers = {
@@ -38,10 +43,38 @@ export default function Home() {
                 }
             })
             .finally(() => setLoading(false));
-    }, [id]);
+        }, [id]);
+        
+    const handleInputChange = (event) => {
+        setReview(event.target.value);
+    };
+    
+    useEffect(() => {
+        console.log(rating);
+    }, [rating]);
+    
+    
+    
+    function sendRequest(method, url, data, headers) {
+        return axios({ method, url, data, headers })
+        .then(response => {
+            if ([200, 201, 204].includes(response.status)) {
+                return true;
+            }
+            throw new Error('Request failed');
+        })
+        .catch(error => {
+            if (error.response){
+                if (error.response.status === 401) {
+                    localStorage.removeItem("access_token");
+                    toast.error("Try to login again");
+                }
+            } 
+            throw error;
+        });
+    }
 
-
-    const handleFollowButton = () => {
+    const handleFollowButton = async () => {
         const headers = {
             "Content-Type": "application/json",
         };
@@ -53,30 +86,30 @@ export default function Home() {
         }
         if (isFollowed) {
             const unfollowPromise = sendRequest('delete', `/api/bookly/follow/`, { book_id: id }, headers)
-                .then(success => {
-                    if (success) {
+            .then(success => {
+                if (success) {
                         setIsFollowed(false);
                     }
                     return success;
-                });
-
+            });
+                
             toast.promise(
                 unfollowPromise,
                 {
                     loading: 'Hủy theo dõi...',
                     success: 'Đã loại bỏ khỏi danh sách theo dõi của bạn',
-                    error: 'Không thể hủy theo dõi',
-                }
+                error: 'Không thể hủy theo dõi',
+            }
             );
         } else {
             const followPromise = sendRequest('post', `/api/bookly/follow/`, { book_id: id }, headers)
-                .then(success => {
-                    if (success) {
-                        setIsFollowed(true);
-                    }
-                    return success;
-                });
-
+            .then(success => {
+                if (success) {
+                    setIsFollowed(true);
+                }
+                return success;
+            });
+                
             toast.promise(
                 followPromise,
                 {
@@ -88,26 +121,57 @@ export default function Home() {
         }
     };
 
-    function sendRequest(method, url, data, headers) {
-        return axios({ method, url, data, headers })
-            .then(response => {
-                if (response.status === 200) {
-                    return true;
+    const handleReviewButton = async () => {
+        const headers = {
+            "Content-Type": "application/json",
+        };
+        let access_token = localStorage.getItem("access_token");
+        if (access_token) headers["authorization"] = `Bearer ${access_token}`;
+        else {
+            toast.error("You must login first");
+            return;
+        }
+        if (isReviewed){
+            const reviewPromise = sendRequest('delete', `/api/bookly/review/${id}/`, {}, headers)
+            .then(success => {
+                if (success) {
+                    setIsReviewed(false);
                 }
-                throw new Error('Request failed');
-            })
-            .catch(error => {
-                if (error.response){
-                    if (error.response.status === 401) {
-                        localStorage.removeItem("access_token");
-                        toast.error("Try to login again");
-                    }
-                } 
-                throw error;
+                setRating(0);
+                setReview("");
+                return success;
             });
-    }
 
+            toast.promise(
+                reviewPromise,
+                {
+                    loading: 'Đang gỡ đánh giá...',
+                    success: 'Đã gỡ đánh giá của bạn',
+                    error: 'Không thể gỡ đánh giá',
+                }
+            );
+        } else {
+            const reviewPromise = sendRequest('post', `/api/bookly/review/${id}/`, {score: rating, comment: review}, headers)
+            .then(success => {
+                if (success) {
+                    setIsReviewed(true);
+                }
+                return success;
+            });
 
+            toast.promise(
+                reviewPromise,
+                {
+                    loading: 'Đang gửi đánh giá...',
+                    success: 'Đã gửi đánh giá của bạn',
+                    error: 'Không thể gửi đánh giá',
+                }
+            );
+
+        }
+    };
+        
+        
     let title = "Bookly";
     let content = null;
     if (loading) {
@@ -175,8 +239,8 @@ export default function Home() {
                     </div>
                     <div className="mt-8 p-8">
                         <div class="mt-6 w-full">
-                            <h1 class="text-xl text-white opacity-90">Comments</h1>
-                            <div class="flex mt-4">
+                            <h1 class="text-xl text-white opacity-90">Đánh giá</h1>
+                            <div class="flex mt-4"> 
                                 <div class="flex-shrink-0 w-[3.5rem] h-[3.5rem]">
                                     <img
                                         alt="avatar"
@@ -185,21 +249,26 @@ export default function Home() {
                                     />
                                 </div>
                                 <div class="w-full ml-5">
+                                    <div>
+                                        <StarRating rating={rating} setRating={setRating} readOnly={isReviewed}/>
+                                    </div>
                                     <textarea
-                                        id="comment"
                                         type="text"
+                                        value={review}
+                                        onChange={handleInputChange}
+                                        readOnly={isReviewed}
                                         spellcheck="false"
                                         autocomplete="off"
                                         rows="2"
                                         maxlength="512"
-                                        placeholder="Write a comment..."
-                                        class="-mt-[2px] focus:text-zinc-500 focus:dark:text-zinc-500 focus:border-zinc-500/100 disable-arrows transition-all duration-200 col-span-6 w-full bg-black/10 hover:bg-black/20 rounded-xl border border-white/10 outline-none py-4 px-6"
+                                        placeholder="Để lại đánh giá của bạn ..."
+                                        class="mt-2 focus:text-zinc-500 focus:dark:text-zinc-500 focus:border-zinc-500/100 disable-arrows transition-all duration-200 col-span-6 w-full bg-black/10 hover:bg-black/20 rounded-xl border border-white/10 outline-none py-4 px-6"
                                     />
                                     <p class="hidden" />
                                     <div class="lg:flex items-center justify-end w-full">
                                         <div>
-                                            <button class="hover:bg-zinc-600/40 flex text-center justify-center items-center bg-zinc-600/20 backdrop-blur-xl transition-all duration-200 py-2 mt-2 px-6 text-sm rounded-xl text-white">
-                                                Send Comment
+                                            <button onClick={handleReviewButton} class="hover:bg-zinc-600/40 flex text-center justify-center items-center bg-zinc-600/20 backdrop-blur-xl transition-all duration-200 py-2 mt-2 px-6 text-sm rounded-xl text-white">
+                                                {isReviewed ? "Gỡ bỏ đánh giá" : "Gửi đánh giá"}
                                             </button>
                                         </div>
                                     </div>
@@ -260,16 +329,16 @@ export default function Home() {
                                     {/* <Tippy content={"Yakında..."} placement="bottom" arrow={false} theme="dark">
                                         <div onClick={() => like()} className={`mt-2 px-6 py-2.5 group button-animate  text-md flex text-center justify-center items-center cursor-pointer rounded-lg bg-zinc-700/30 border border-zinc-700/10 hover:bg-zinc-700/40`}>
                                             <i className={`fas fa-heart text-red-600 mt-0.5 text-lg button-animate`}></i>
-                                        </div>
+                                            </div>
                                     </Tippy> */}
                                 </div>
                                 {/* <div className="mt-4">
                                     <h1 className="text-lg text-gray-100 font-semibold mb-2">Genre</h1>
                                     <div className="grid grid-cols-2 gap-2 ">
-                                        <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Action</div>
-                                        <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Comedy</div>
-                                        <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Adventure</div>
-                                        <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Romance</div>
+                                    <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Action</div>
+                                    <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Comedy</div>
+                                    <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Adventure</div>
+                                    <div className="bg-zinc-700/30 border-zinc-700/20 border px-3 cursor-pointer text-sm py-1 text-center items-center rounded-md">Romance</div>
                                     </div>
                                 </div> */}
                                 <div className="mt-4">
@@ -282,10 +351,18 @@ export default function Home() {
                                                 <p className="text-[15px]">{book.title}</p>
                                             </div>
                                         </div>
-                                        <div className="flex justify-between">
+                                        <Link href={`/author/${book.author}`} className="flex justify-between">
                                             <p className="text-[15px] opacity-80">Tác giả</p>
                                             <div className="flex">
                                                 <p className="text-[15px]">{book.author_name}</p>
+                                            </div>
+                                        </Link>
+                                        <div className="flex justify-between">
+                                            <p className="text-[15px] opacity-80">Lượt xem</p>
+                                            <div className="flex">
+                                                <p className="text-[15px]">
+                                                    {book.chapters.reduce((total, chapter) => total + chapter.viewcount, 0)} lượt
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -326,30 +403,39 @@ export default function Home() {
 
                             <div className="mt-8">
                                 <div class="mt-6 w-full">
-                                    <h1 class="text-xl text-white opacity-90">Comments</h1>
+                                    <h1 class="text-xl text-white opacity-90">Đánh giả</h1>
                                     <div class="flex mt-4">
                                         <div class="flex-shrink-0 w-[3.5rem] h-[3.5rem]">
                                             <img
                                                 alt="avatar"
                                                 src="/logo.png"
                                                 class="rounded-full"
-                                            />
+                                                />
                                         </div>
-                                        <div class="w-full ml-5">
-                                            <textarea
-                                                id="comment"
-                                                type="text"
-                                                spellcheck="false"
-                                                autocomplete="off"
-                                                rows="2"
-                                                maxlength="512"
-                                                placeholder=" Write a comment..."
-                                                class="-mt-[2px] focus:text-zinc-500 focus:dark:text-zinc-500 focus:border-zinc-500/100 disable-arrows transition-all duration-200 col-span-6 w-full bg-black/10 hover:bg-black/20 rounded-xl border border-white/10 outline-none py-4 px-6"
-                                            />
-                                            <p class="hidden" />
-                                            <div class="lg:flex items-center justify-end w-full">
-                                                <div>
-                                                    <button class="hover:bg-zinc-600/40 flex text-center justify-center items-center bg-zinc-600/20 backdrop-blur-xl transition-all duration-200 py-2 mt-2 px-6 text-sm rounded-xl text-white">Comment Send</button>
+                                        <div class="w-full ml-5" >
+                                            <div className="-mt-[2px]">
+                                                <StarRating rating={rating} setRating={setRating} readOnly={isReviewed}/>
+                                            </div>
+                                            <div class="w-full">
+                                                <textarea
+                                                    type="text"
+                                                    value={review}
+                                                    onChange={handleInputChange}
+                                                    readOnly={isReviewed}
+                                                    spellcheck="false"
+                                                    autocomplete="off"
+                                                    rows="2"
+                                                    maxlength="512"
+                                                    placeholder="Để lại suy nghĩ của bạn ..."
+                                                    class="mt-2 focus:text-zinc-500 focus:dark:text-zinc-500 focus:border-zinc-500/100 disable-arrows transition-all duration-200 col-span-6 w-full bg-black/10 hover:bg-black/20 rounded-xl border border-white/10 outline-none py-4 px-6"
+                                                    />
+                                                <p class="hidden" />
+                                                <div class="lg:flex items-center justify-end w-full">
+                                                    <div>
+                                                        <button onClick={handleReviewButton} class="hover:bg-zinc-600/40 flex text-center justify-center items-center bg-zinc-600/20 backdrop-blur-xl transition-all duration-200 py-2 mt-2 px-6 text-sm rounded-xl text-white">
+                                                            {isReviewed ? "Gỡ bỏ đánh giá" : "Gửi đánh giá"}
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -402,3 +488,20 @@ export default function Home() {
         </>
     )
 }
+
+
+const Star = ({ onClick, filled }) => (
+    <svg onClick={onClick} className="h-6 w-6 cursor-pointer" fill={filled ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15.364l-3.72 2.595a1 1 0 01-1.447-1.054l.7-4.242-3.15-3.22a1 1 0 01.568-1.683l4.1-.633 1.85-3.946a1 1 0 011.8 0l1.85 3.946 4.1.633a1 1 0 01.568 1.683l-3.15 3.22.7 4.242a1 1 0 01-1.447 1.054L12 15.364z" />
+    </svg>
+);
+
+const StarRating = ({ rating, setRating, readOnly }) => {
+    return (
+    <div className="flex">
+        {[...Array(5)].map((_, i) => (
+        <Star key={i} filled={i < rating} onClick={readOnly ? null : () => setRating(i + 1)} />
+        ))}
+    </div>
+    );
+};
