@@ -1,6 +1,7 @@
 import EditorialCard from "@/components/Card/EditorialCard";
 import Link from "next/link";
 import { useState } from "react";
+import { NextSeo } from 'next-seo';
 
 export default function home() {
 
@@ -23,6 +24,7 @@ export default function home() {
 
   return (
     <>
+      <NextSeo title="Studio"/>
       <div className="lg:px-24 mx-auto justify-center lg:mt-8 pt-10">
         <div className="h-[100px] flex justify-center">
           <p className="text-4xl font-bold self-center">Author</p>

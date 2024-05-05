@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 body {
-    background-color: #000;
+    background-color: #161520;
     color: #c2c6cc;
     overflow-x: hidden !important;
 }
