@@ -14,7 +14,7 @@ export default function Home() {
 
     const handleRecentListAPI = async () => {
         if (localStorage.getItem("access_token") === null) {
-            toast.error("You must login first");
+            toast.error("Bạn cần đăng nhập để sử dụng tính năng này");
             return;
         }
 
@@ -42,7 +42,7 @@ export default function Home() {
     };
     const handleFollowListAPI = async () => {
         if (localStorage.getItem("access_token") === null) {
-            toast.error("You must login first");
+            toast.error("Bạn cần đăng nhập để sử dụng tính năng này");
             return;
         }
 
@@ -104,7 +104,7 @@ export default function Home() {
                 content = (
                     <>
                         <div className='mt-8 lg:ml-0 -ml-4'>
-                            <div id="title"><h1 class="text-2xl font-semibold">Persional Library</h1></div>
+                            <div id="title"><h1 class="text-2xl font-semibold">Thư viện cá nhân</h1></div>
                         </div>
                     </>
                 );
@@ -114,7 +114,7 @@ export default function Home() {
                 content = (
                     <>
                         <div className='mt-8 lg:ml-0 -ml-4'>
-                            <div id="title"><h1 class="text-2xl font-semibold">Recent Reading</h1></div>
+                            <div id="title"><h1 class="text-2xl font-semibold">Đã đọc gần đây</h1></div>
                         </div>
                         <div className='mt-4 w-full'>
                            <div id="body" className="flex flex-col p-4">
@@ -129,7 +129,7 @@ export default function Home() {
                 content = (
                     <>
                         <div className='mt-8 lg:ml-0 -ml-4'>
-                            <div id="title"><h1 class="text-2xl font-semibold">Follow</h1></div>
+                            <div id="title"><h1 class="text-2xl font-semibold">Danh sách theo dõi</h1></div>
                         </div>
                         <div className='mt-4 w-full'>
                            <div id="body" className="flex flex-col p-4">
@@ -160,11 +160,11 @@ export default function Home() {
                 <div className='hidden lg:block w-60 h-[64rem] overflow-auto rounded-lg bg-zinc-700/20 border border-zinc-700/10'>
                     <div className="flex flex-col mt-1 overflow-auto">
                         <div onClick={() => changeMenu("recent")} className={`bg-zinc-700/30 justify-between button-animate p-2 px-3 text-sm flex cursor-pointer mt-2 rounded-sm hover:bg-zinc-700/20`}>
-                            <p className="text-center">Recent Reading</p>
+                            <p className="text-center">Đã đọc gần đây</p>
                             <p className="text-center text-sm">.</p>
                         </div>
                         <div onClick={() => changeMenu("follow")} className={`bg-zinc-700/30 justify-between button-animate p-2 px-3 text-sm flex cursor-pointer mt-2 rounded-sm hover:bg-zinc-700/20`}>
-                            <p className="text-center">Follow</p>
+                            <p className="text-center">Danh sách theo dõi</p>
                             <p className="text-center text-sm">.</p>
                         </div>
                     </div>

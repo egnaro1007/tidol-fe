@@ -2,25 +2,19 @@ module.exports = {
     navbarItems: [
       {
         web: true,
-        title: "Home",
+        title: "Trang chủ",
         ico: "home",
         href: "/",
       },
       {
         web: true,
-        title: "Browse",
+        title: "Tất cả",
         ico: "question-circle",
         href: "/browse",
       },
       {
         web: true,
-        title: "Mangas",
-        ico: "question-circle",
-        href: "/mangas",
-      },
-      {
-        web: true,
-        title: "My Library",
+        title: "Thư viện của tôi",
         ico: "question-circle",
         href: "/library",
       },
