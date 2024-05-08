@@ -1,11 +1,9 @@
-import { NextSeo } from 'next-seo';
-import MiniCard from "@/components/Card/Mini"
 import { useEffect, useState } from "react";
-import MangaCard from "@/components/Card/MangaCard";
+import { NextSeo } from "next-seo";
 import Tippy from '@tippyjs/react';
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import BrowseMangaCard from '@/components/Card/BrowseCard';
+
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Home() {
 

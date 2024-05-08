@@ -1,12 +1,12 @@
-import { NextSeo } from 'next-seo';
-import MiniCard from "@/components/Card/Mini"
 import React, { useEffect, useState } from "react";
-import MangaCard from "@/components/Card/MangaCard";
+import { NextSeo } from "next-seo";
+import axios from 'axios';
 import Tippy from '@tippyjs/react';
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+
 import BrowseMangaCard from '@/components/Card/BrowseCard';
-import axios from 'axios';
+
+import "react-loading-skeleton/dist/skeleton.css";
 
 
 
@@ -115,7 +115,7 @@ export default function Home() {
                                 <i className="fas fa-chevron-left"></i>
                             </button>
                         </Tippy>
-                        <button className="bg-zinc-500/20 p-2 px-4 rounded-md cursor-pointer">1</button>
+                        <button className="bg-zinc-500/20 p-2 px-4 rounded-md cursor-pointer">{currentPage}</button>
                         <Tippy content="Next Page">
                             <button onClick={() => pageHandler("next")} className="bg-zinc-500/20 p-2 px-4 rounded-md cursor-pointer">
                                 <i className="fas fa-chevron-right"></i>
