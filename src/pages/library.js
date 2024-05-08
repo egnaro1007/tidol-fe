@@ -1,15 +1,8 @@
-import { NextSeo } from 'next-seo';
 import React, { useEffect, useState } from "react";
+import { NextSeo } from "next-seo";
+import Link from "next/link";
 
 import BigCard from '@/components/Card/BigCard';
-
-
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import MangaCard from "@/components/Card/MangaCard";
-import Link from "next/link";
-import SlideCard from '@/components/Card/SlideCard';
-
 
 
 export default function Home() {

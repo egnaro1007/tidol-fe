@@ -1,17 +1,14 @@
-import { NextSeo } from 'next-seo';
-import MiniCard from "@/components/Card/Mini"
 import { useEffect, useState } from "react";
-import MangaCard from "@/components/Card/MangaCard";
-import Tippy from '@tippyjs/react';
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import moment from 'moment/moment';
-import BrowseMangaCard from '@/components/Card/BrowseCard';
+import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import Link from 'next/link';
-import { useRouter } from 'next/router'
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { comment } from 'postcss';
+import Tippy from '@tippyjs/react';
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import moment from 'moment/moment';
+
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Home() {
     const router = useRouter();

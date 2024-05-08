@@ -1,8 +1,9 @@
-import EditorialCard from "@/components/Card/EditorialCard";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { NextSeo } from "next-seo";
 import axios from "axios";
+
+import EditorialCard from "@/components/Card/EditorialCard";
 
 export default function Home() {
 

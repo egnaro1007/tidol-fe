@@ -1,9 +1,9 @@
-import { NextSeo } from 'next-seo';
-import MiniCard from "@/components/Card/Mini";
 import { Swiper, SwiperSlide } from "swiper/react";
-import MangaCard from "@/components/Card/MangaCard";
 import { Autoplay, Pagination } from "swiper";
-import Link from "next/link";
+import { NextSeo } from "next-seo";
+
+import MiniCard from "@/components/Card/Mini";
+import MangaCard from "@/components/Card/NormalCard";
 import SlideCard from '@/components/Card/SlideCard';
 
 export default function Home() {

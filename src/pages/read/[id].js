@@ -1,14 +1,12 @@
-import { NextSeo } from 'next-seo';
-import MiniCard from "@/components/Card/Mini"
 import { useEffect, useState } from "react";
-import MangaCard from "@/components/Card/MangaCard";
-import Tippy from '@tippyjs/react';
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import moment from 'moment/moment';
-import ScrollToTopButton from '@/components/ScroolTopButton';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import axios from 'axios';
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+
+import ScrollToTopButton from '@/components/ScroolTopButton';
+
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Home() {
     const router = useRouter();
