@@ -23,6 +23,7 @@ export default function Home() {
     const [isReviewed, setIsReviewed] = useState(false);
     const [review, setReview] = useState("");
     const [rating, setRating] = useState(0);
+    const [allReviews, setAllReviews] = useState([]);
     
     useEffect(() => {
         if (!id) return;
@@ -31,27 +32,44 @@ export default function Home() {
         };
         let access_token = localStorage.getItem("access_token");
         if (access_token) headers["authorization"] = `Bearer ${access_token}`;
-        axios.get(`http://127.0.0.1:8000/api/bookly/book/${id}/`, { headers })
-            .then(({ data }) => {
-                setBook(data);
-                setIsFollowed(data.is_followed);
-            })
-            .catch(error => {
-                console.error('Error fetching data: ', error);
-                if (error.response && error.response.status === 401) {
-                    localStorage.removeItem("access_token");
-                }
-            })
-            .finally(() => setLoading(false));
+
+        Promise.all([
+            axios.get(`http://127.0.0.1:8000/api/bookly/book/${id}/`, { headers })
+                .then(({ data }) => {
+                    setBook(data);
+                    setIsFollowed(data.is_followed);
+                })
+                .catch(error => {
+                    console.error('Error fetching data: ', error);
+                    if (error.response && error.response.status === 401) {
+                        localStorage.removeItem("access_token");
+                    }
+                }),
+
+            axios.get(`/api/bookly/review/${id}/`, { headers })
+                .then(({ data }) => {
+                    if (data) {
+                        if (data.my_review) {
+                            setRating(data.my_review.score);
+                            setReview(data.my_review.comment);
+                            setIsReviewed(true);
+                        }
+                        setAllReviews(data.all_reviews);
+                    }
+                })
+        ]).finally(() => {
+            setLoading(false);
+            console.log(review);
+            console.log(rating);
+            console.log(isReviewed);
+            console.log(allReviews);
+        });
+
         }, [id]);
         
     const handleInputChange = (event) => {
         setReview(event.target.value);
     };
-    
-    useEffect(() => {
-        console.log(rating);
-    }, [rating]);
     
     
     
@@ -139,6 +157,7 @@ export default function Home() {
                 }
                 setRating(0);
                 setReview("");
+                window.location.reload();
                 return success;
             });
 
@@ -274,35 +293,35 @@ export default function Home() {
                                     </div>
                                 </div>
                             </div>
-                            <div
-                                class="mt-5 backdrop-filter backdrop-blur-lg border border-zinc-300/10 text-zinc-300 transition-all duration-200 rounded-lg p-5"
-                            >
-                                <div class="flex w-full">
-                                    <div class="flex-shrink-0 w-[4rem] h-[4rem]">
-                                        <img
-                                            alt="logo"
-                                            class="rounded-full"
-                                            src="https://avatars.githubusercontent.com/u/73245847?v=4"
-                                        />
-                                    </div>
-                                    <div class="ml-3 w-full">
-                                        <div class="flex items-center">
-                                            <p class="text-lg font-medium mr-2">NullMan</p>
-                                            <p class="ml-2 text-xs text-white/50">{moment(new Date()).from()}</p>
+                                {allReviews.map((review) => (
+                                    <div class="mt-5 backdrop-filter backdrop-blur-lg border border-zinc-300/10 text-zinc-300 transition-all duration-200 rounded-lg p-5">
+                                        <div class="flex w-full">
+                                            <div class="flex-shrink-0 w-[4rem] h-[4rem]">
+                                                <img
+                                                    alt="logo"
+                                                    class="rounded-full"
+                                                    src="https://avatars.githubusercontent.com/u/81900902?v=4"
+                                                />
+                                            </div>
+                                            <div class="ml-3 w-full">
+                                                <div class="flex items-center">
+                                                    <p class="text-lg font-medium mr-2">{review.user_name}</p>
+                                                    <p class="ml-2 text-xs text-white/50">{moment(new Date()).from(review.timestamp)}</p>
 
-                                            <div class="ml-auto">
-                                                <button class="hover:bg-zinc-600/40 flex text-center justify-center items-center bg-zinc-600/20 backdrop-blur-xl transition-all duration-200 py-2 mt-2 px-6 text-sm rounded-xl text-white">
-                                                    <i class="fas fa-reply mr-2"></i>
-                                                    <p class="text-xs">Reply</p>
-                                                </button>
+                                                    {/* <div class="ml-auto">
+                                                        <button class="hover:bg-zinc-600/40 flex text-center justify-center items-center bg-zinc-600/20 backdrop-blur-xl transition-all duration-200 py-2 mt-2 px-6 text-sm rounded-xl text-white">
+                                                            <i class="fas fa-reply mr-2"></i>
+                                                            <p class="text-xs">Reply</p>
+                                                        </button>
+                                                    </div> */}
+                                                </div>
+                                                <p class="text-sm">
+                                                    {review.comment}
+                                                </p>
                                             </div>
                                         </div>
-                                        <p class="text-sm">
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                        </p>
                                     </div>
-                                </div>
-                            </div>
+                                ))}
                         </div>
                     </div>
                 </div>
@@ -440,35 +459,35 @@ export default function Home() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div
-                                        class="mt-5 backdrop-filter backdrop-blur-lg border border-zinc-300/10 text-zinc-300 transition-all duration-200 rounded-lg p-5"
-                                    >
-                                        <div class="flex w-full">
-                                            <div class="flex-shrink-0 w-[4rem] h-[4rem]">
-                                                <img
-                                                    alt="logo"
-                                                    class="rounded-full"
-                                                    src="https://avatars.githubusercontent.com/u/73245847?v=4"
-                                                />
-                                            </div>
-                                            <div class="ml-3 w-full">
-                                                <div class="flex items-center">
-                                                    <p class="text-lg font-medium mr-2">NullMan</p>
-                                                    <p class="ml-2 text-xs text-white/50">{moment(new Date()).from()}</p>
-
-                                                    <div class="ml-auto">
-                                                        <button class="hover:bg-zinc-600/40 flex text-center justify-center items-center bg-zinc-600/20 backdrop-blur-xl transition-all duration-200 py-2 mt-2 px-6 text-sm rounded-xl text-white">
-                                                            <i class="fas fa-reply mr-2"></i>
-                                                            <p class="text-xs">Reply</p>
-                                                        </button>
+                                        {allReviews.map((review) => (
+                                            <div class="mt-5 backdrop-filter backdrop-blur-lg border border-zinc-300/10 text-zinc-300 transition-all duration-200 rounded-lg p-5">
+                                                    <div class="flex w-full">
+                                                        <div class="flex-shrink-0 w-[4rem] h-[4rem]">
+                                                            <img
+                                                                alt="logo"
+                                                                class="rounded-full"
+                                                                src="https://avatars.githubusercontent.com/u/81900902?v=4"
+                                                            />
+                                                        </div>
+                                                        <div class="ml-3 w-full">
+                                                            <div class="flex items-center">
+                                                                <StarRating className="mr-2" rating={review.score} readOnly={true}/>
+                                                                <p class="ml-2 text-lg font-medium mr-2">{review.user_name}</p>
+                                                                <p class="ml-2 text-xs text-white/50">{moment(new Date()).from(review.timestamp)}</p>
+                                                                {/* <div class="ml-auto">
+                                                                    <button class="hover:bg-zinc-600/40 flex text-center justify-center items-center bg-zinc-600/20 backdrop-blur-xl transition-all duration-200 py-2 mt-2 px-6 text-sm rounded-xl text-white">
+                                                                        <i class="fas fa-reply mr-2"></i>
+                                                                        <p class="text-xs">Reply</p>
+                                                                    </button>
+                                                                </div> */}
+                                                            </div>
+                                                            <p class="text-sm">
+                                                                {review.comment}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <p class="text-sm">
-                                                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                                </p>
                                             </div>
-                                        </div>
-                                    </div>
+                                        ))}
                                 </div>
                             </div>
                         </div>
