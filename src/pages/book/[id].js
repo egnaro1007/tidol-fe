@@ -30,6 +30,8 @@ export default function Home() {
         let access_token = localStorage.getItem("access_token");
         if (access_token) headers["authorization"] = `Bearer ${access_token}`;
 
+        setLoading(true);
+
         Promise.all([
             axios.get(`http://127.0.0.1:8000/api/bookly/book/${id}/`, { headers })
                 .then(({ data }) => {
@@ -56,10 +58,6 @@ export default function Home() {
                 })
         ]).finally(() => {
             setLoading(false);
-            console.log(review);
-            console.log(rating);
-            console.log(isReviewed);
-            console.log(allReviews);
         });
 
         }, [id]);
@@ -328,7 +326,7 @@ export default function Home() {
                             <img alt={book.title} src={book.cover} className="flex-shrink-1 rounded-lg w-[250px] min-h-[280px] max-h-[340px] relative object-cover bg-cover" />
                             <div className="mt-2">
                                 <div className="flex space-x-2 w-[250px]">
-                                    <Tippy content={"Yakında..."} placement="bottom" arrow={false} theme="dark">
+                                    <Tippy placement="bottom" arrow={false} theme="dark">
                                         <div onClick={() => handleFollowButton()} className={`w-full mt-2 py-2.5 group button-animate p-2 px-6 text-md flex text-center justify-center items-center cursor-pointer rounded-lg bg-zinc-700/30 border border-zinc-700/10 hover:bg-zinc-700/40`}>
                                             {isFollowed ?
                                                 <div> 
