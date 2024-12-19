@@ -68,7 +68,7 @@ function BookComponent({ book }) {
                 chunk1={`Lượt xem: ${book.viewcount}`}
                 chunk2={``}
                 chunk3 = {`Cập nhật lần cuối: ${new Date(book.lastupdated).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })} - ${new Date(book.lastupdated).toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' })}`}
-                cover={`http://127.0.0.1:8000${book.cover}`}
+                cover={`/${book.cover}`}
             />
         </div>
         {/* <div className="w-full flex flex-row justify-center">

@@ -36,7 +36,7 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
             return;
         }
         try {
-            const res = await fetch("http://127.0.0.1:8000/api/auth/token", {
+            const res = await fetch("/api/auth/token", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
 
         // Verify access token
         try {
-            const res = await fetch("http://127.0.0.1:8000/api/auth/token/verify", {
+            const res = await fetch("/api/auth/token/verify", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -100,7 +100,7 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
 
         // Try to refresh the token
         if (refreshToken) {
-            const refreshRes = await fetch("http://127.0.0.1:8000/api/auth/token/refresh", {
+            const refreshRes = await fetch("/api/auth/token/refresh", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -135,7 +135,7 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
     if (!token) { return; }
     
     try {
-        const res = await fetch("http://127.0.0.1:8000/api/auth/whoami", {
+        const res = await fetch("/api/auth/whoami", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

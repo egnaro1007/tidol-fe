@@ -22,7 +22,7 @@ export default function Home() {
     const pageSize = 18;
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/bookly/book/?page=${currentPage}`)
+        axios.get(`/api/bookly/book/?page=${currentPage}`)
           .then(response => {
             setData(response.data);
             setResult(response.data.results);
@@ -135,7 +135,7 @@ function BookComponent({ book }) {
             id={book.id}
             title={book.title}
             author={book.author_name}
-            cover={book.cover}
+            cover={`/${book.cover}`}
             description={book.description}
         />
     );
