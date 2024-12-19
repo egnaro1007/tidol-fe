@@ -67,7 +67,7 @@ export default function Home() {
                     id = {item.id} 
                     title = {item.title}
                     description = {item.description}
-                    cover = {`http://127.0.0.1:8000${item.cover}`}
+                    cover = {`/${item.cover}`}
                   />
                 </SwiperSlide>
               ))}
@@ -123,7 +123,7 @@ export default function Home() {
                       id = {item.id} 
                       title = {item.title}
                       description = {item.description}
-                      cover = {`http://127.0.0.1:8000${item.cover}`}
+                      cover = {`/${item.cover}`}
                       chunk1 = {item.author_name}
                       chunk2 = {`${item.viewcount} lượt xem`}
                     />
@@ -180,7 +180,7 @@ export default function Home() {
                       id = {item.id} 
                       title = {item.title}
                       description = {item.description}
-                      cover = {`http://127.0.0.1:8000${item.cover}`}
+                      cover = {`/${item.cover}`}
                       chunk1 = {item.author_name}
                       chunk2 = {`${item.viewcount} lượt xem`}
                     />
@@ -238,7 +238,7 @@ export default function Home() {
                       id = {item.id} 
                       title = {item.title}
                       description = {item.description}
-                      cover = {`http://127.0.0.1:8000${item.cover}`}
+                      cover = {`/${item.cover}`}
                       chunk1 = {item.author_name}
                       chunk2 = {`${item.viewcount} lượt xem`}
                     />

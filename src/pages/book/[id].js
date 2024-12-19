@@ -33,7 +33,7 @@ export default function Home() {
         setLoading(true);
 
         Promise.all([
-            axios.get(`http://127.0.0.1:8000/api/bookly/book/${id}/`, { headers })
+            axios.get(`/api/bookly/book/${id}/`, { headers })
                 .then(({ data }) => {
                     setBook(data);
                     setIsFollowed(data.is_followed);

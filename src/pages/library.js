@@ -20,7 +20,7 @@ export default function Home() {
 
         setLoading(true);
 
-        const res = await fetch("http://127.0.0.1:8000/api/bookly/history/", {
+        const res = await fetch("/api/bookly/history/", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export default function Home() {
 
         setLoading(true);
 
-        const res = await fetch("http://127.0.0.1:8000/api/bookly/follow/", {
+        const res = await fetch("/api/bookly/follow/", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -189,7 +189,7 @@ function BookComponent({ history }) {
             chunk1={<Link href={`/author/${history.author_id}`}>Tác giả: {history.author_name}</Link>}
             chunk2 = {<Link href={`/read/${history.chapter_id}`}>Chương {history.chapter_number}: {history.chapter_title}</Link>}
             chunk3={`${new Date(history.timestamp).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })} - ${new Date(history.timestamp).toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' })}`}
-            cover={`http://127.0.0.1:8000${history.book_cover}`}
+            cover={`/${history.book_cover}`}
         />
     );
 }
@@ -207,7 +207,7 @@ function FollowComponent({ follow }) {
             chunk3={follow.latest_chapter 
                 ? <p>{`Cập nhật: ${new Date(follow.latest_chapter.lastupdated).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })} - ${new Date(follow.latest_chapter.lastupdated).toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' })}`}</p> 
                 : <p></p>}
-            cover={`http://127.0.0.1:8000${follow.book_cover}`}
+            cover={`/${follow.book_cover}`}
         />
     );
 }
