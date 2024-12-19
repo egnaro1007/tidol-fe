@@ -1,7 +1,9 @@
 # Webtoon Read Website
 
-[Demo Website](https://webtoon-read-website.vercel.app/)
-> A simple webtoon reading website design.
+ A simple book reading website.
+
+## Backend:
+https://github.com/egnaro1007/tidol
 
 ## Demo Website
 
@@ -10,6 +12,3 @@
 ![](./assets/demo_2.png)
 
 ![](./assets/demo_3.png)
-
-
-[Discord Server](https://discord.gg/pS4YCmywQ7)
