@@ -207,12 +207,12 @@ export default function Home() {
         content = (
             <>
                 <div className="browse-banner !w-[100rempx] bg-zinc-700/20 rounded-lg">
-                    <img id="image" src={book.cover} className="button-animate browse-image" />
+                    <img id="image" src={`/${book.cover}`} className="button-animate browse-image" />
                     <div id="black" className="bg-gradient-to-tr from-zinc-900/20 to-zinc-900/50 browse-black"></div>
                 </div>
                 <div id="body2" className="block lg:hidden">
                     <div className="flex justify-center">
-                        <img alt={book.title} src={book.cover} className="flex-shrink-1 rounded-lg w-[250px] h-[380px] relative object-cover bg-cover -mt-32" />
+                        <img alt={book.title} src={`/${book.cover}`} className="flex-shrink-1 rounded-lg w-[250px] h-[380px] relative object-cover bg-cover -mt-32" />
                     </div>
                     <h1 className="text-xl font-semibold text-white text-center mt-3">
                         {book.title}
@@ -323,7 +323,7 @@ export default function Home() {
                 <div id="body" className="hidden lg:block">
                     <div id="user-info" className="flex -mt-2 space-x-8">
                         <div className="ml-12 -mt-24">
-                            <img alt={book.title} src={book.cover} className="flex-shrink-1 rounded-lg w-[250px] min-h-[280px] max-h-[340px] relative object-cover bg-cover" />
+                            <img alt={book.title} src={`/${book.cover}`} className="flex-shrink-1 rounded-lg w-[250px] min-h-[280px] max-h-[340px] relative object-cover bg-cover" />
                             <div className="mt-2">
                                 <div className="flex space-x-2 w-[250px]">
                                     <Tippy placement="bottom" arrow={false} theme="dark">
