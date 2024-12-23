@@ -2,6 +2,7 @@ import { useState, Fragment, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { toast } from 'react-hot-toast'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import Cookies from 'js-cookie';
 
 export default function AuthComponent({ isOpen, setIsOpen }) {
     const [type, setType] = useState("login")
@@ -11,11 +12,14 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
     const [password, setPassword] = useState(null)
     const [username, setUsername] = useState(null)
 
+    const csrfToken = Cookies.get('csrftoken');
+
     const postRegister = async () => {
         const res = await fetch("/api/v1/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                'X-CSRFToken': csrfToken,
             },
             body: JSON.stringify({
                 username: username,
@@ -40,6 +44,7 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    'X-CSRFToken': csrfToken,
                 },
                 body: JSON.stringify({
                     username: username,
@@ -80,6 +85,7 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    'X-CSRFToken': csrfToken,
                 },
                 body: JSON.stringify({
                     token: token
@@ -104,6 +110,7 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    'X-CSRFToken': csrfToken,
                 },
                 body: JSON.stringify({
                     refresh: refreshToken
@@ -140,6 +147,7 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
+                'X-CSRFToken': csrfToken,
             },
         }, [])
         if (res.status === 200) {
