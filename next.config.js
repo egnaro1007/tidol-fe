@@ -6,11 +6,11 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `http://localhost:8000/api/:path*/`,
+        destination: `http://tidol-be.winddarroww-dev.svc.cluster.local/api/:path*/`,
       },
       {
         source: '/covers/:path*',
-        destination: `http://localhost:8000/covers/:path*/`,
+        destination: `http://tidol-be.winddarroww-dev.svc.cluster.local/covers/:path*/`,
       }
     ]
   }
