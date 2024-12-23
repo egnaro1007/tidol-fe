@@ -189,7 +189,7 @@ function BookComponent({ history }) {
             chunk1={<Link href={`/author/${history.author_id}`}>Tác giả: {history.author_name}</Link>}
             chunk2 = {<Link href={`/read/${history.chapter_id}`}>Chương {history.chapter_number}: {history.chapter_title}</Link>}
             chunk3={`${new Date(history.timestamp).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })} - ${new Date(history.timestamp).toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' })}`}
-            cover={`/${history.book_cover}`}
+            cover={`${history.book_cover}`}
         />
     );
 }
@@ -207,7 +207,7 @@ function FollowComponent({ follow }) {
             chunk3={follow.latest_chapter 
                 ? <p>{`Cập nhật: ${new Date(follow.latest_chapter.lastupdated).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })} - ${new Date(follow.latest_chapter.lastupdated).toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' })}`}</p> 
                 : <p></p>}
-            cover={`/${follow.book_cover}`}
+            cover={`${follow.book_cover}`}
         />
     );
 }

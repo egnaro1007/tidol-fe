@@ -259,7 +259,7 @@ export default function AuthComponent({ isOpen, setIsOpen }) {
                     <div className="flex min-h-full items-center justify-center p-4 text-center">
                         <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100" leave="ease-in duration-200" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
                             <Dialog.Panel className="w-full max-w-sm transform overflow-hidden rounded-md bg-[#111112] p-4 text-left align-middle shadow-2xl transition-all">
-                                <img className="mt-12 w-[80px] h-[80px] justify-center mx-auto rounded-full" src="logo.png" />
+                                <img className="mt-12 w-[80px] h-[80px] justify-center mx-auto rounded-full" src="/logo.png" />
                                 <h3 className="mt-4 text-[#e3e3e3] text-[18px] font-semibold text-center">Welcome!</h3>
                                 <div className="mt-6 justify-center mx-auto text-center">
                                     {content}
